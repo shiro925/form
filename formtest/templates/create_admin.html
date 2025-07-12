@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}管理者アカウント作成{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">管理者アカウント作成</h2>
+    <p class="text-muted">※ 初回のみ使用可能です。</p>
+
+    <form method="POST">
+        <div class="mb-3">
+            <label for="username" class="form-label">ユーザー名</label>
+            <input type="text" class="form-control" name="username" id="username" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">パスワード</label>
+            <input type="password" class="form-control" name="password" id="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">作成する</button>
+    </form>
+</div>
+{% endblock %}

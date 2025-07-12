@@ -1,0 +1,422 @@
+{% extends "base.html" %}
+
+{% block title %}介護サービス利用情報入力 | 介護サービス利用情報フォーム{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title h5 mb-0">お客様情報入力フォーム</h2>
+            </div>
+            <div class="card-body">
+                <div class="help-text mb-4">
+                    <p><i class="fas fa-info-circle me-2"></i>以下のフォームに必要事項をご記入ください。<span class="text-danger">*</span>は必須項目です。</p>
+                </div>
+                
+                <form method="POST" action="{{ url_for('index') }}" novalidate>
+                    {{ form.hidden_tag() }}
+                    
+                    <!-- 基本情報セクション -->
+                    <div class="form-section">
+                        <h3 class="section-title"><i class="fas fa-user me-2"></i>基本情報</h3>
+                        
+                        <div class="mb-3">
+                            {{ form.name.label(class="form-label required-label") }}
+                            {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else ""), placeholder="例：山田 太郎") }}
+                            
+                            {% if form.name.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.name.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.gender.label(class="form-label required-label") }}
+                                {{ form.gender(class="form-select" + (" is-invalid" if form.gender.errors else "")) }}
+                                
+                                {% if form.gender.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.gender.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                          <!--  <div class="col-md-6 mb-3">
+                                {{ form.birthdate.label(class="form-label required-label") }}
+                                {{ form.birthdate(class="form-control flatpickr-date" + (" is-invalid" if form.birthdate.errors else ""), type="date") }}
+                                
+                                {% if form.birthdate.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.birthdate.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div> -->
+
+
+                        <div class="col-md-6 mb-3">
+                            <label for="birthdate_select" class="form-label required-label">生年月日</label>
+                            <div class="d-flex gap-2">
+                              <select id="yearSelect" class="form-select" required></select>
+                              <select id="monthSelect" class="form-select" required></select>
+                              <select id="daySelect" class="form-select" required></select>
+                            </div>
+                            <!-- hidden input にまとめて格納 -->
+                            <input type="hidden" name="birthdate" id="birthdate" value="">
+                          </div>
+                        
+                        <!-- 連絡先情報 -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.phone.label(class="form-label required-label") }}
+                                {{ form.phone(class="form-control" + (" is-invalid" if form.phone.errors else ""), placeholder="090-1234-5678") }}
+                                
+                                {% if form.phone.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.phone.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">例：090-1234-5678</div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                {{ form.email.label(class="form-label") }}
+                                {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), placeholder="example@email.com") }}
+                                
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.email.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">任意項目です</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 紹介情報セクション -->
+                    <div class="form-section">
+                        <h3 class="section-title"><i class="fas fa-handshake me-2"></i>紹介情報</h3>
+                        
+                        <div class="mb-3">
+                            {{ form.referrer_name.label(class="form-label") }}
+                            {{ form.referrer_name(class="form-control", placeholder="ご紹介いただいた方のお名前") }}
+                            <div class="form-text">紹介者がいない場合は空欄のままで構いません</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.referrer_contact.label(class="form-label") }}
+                            {{ form.referrer_contact(class="form-control", placeholder="電話番号またはメールアドレス") }}
+                        </div>
+                    </div>
+                    
+                    <!-- 介護状況セクション -->
+                    <div class="form-section">
+                        <h3 class="section-title"><i class="fas fa-hands-helping me-2"></i>介護状況</h3>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.care_level.label(class="form-label") }}
+                                {{ form.care_level(class="form-select") }}
+                                <div class="form-text">要介護認定を受けている場合はレベルを選択してください</div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                {{ form.support_level.label(class="form-label") }}
+                                {{ form.support_level(class="form-select") }}
+                                <div class="form-text">要支援認定を受けている場合はレベルを選択してください</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 希望サービスセクション -->
+                    <div class="form-section">
+                        <h3 class="section-title"><i class="fas fa-heart me-2"></i>ご希望サービス</h3>
+                        
+                        <div class="mb-3">
+                            {{ form.service_type.label(class="form-label required-label") }}
+                            <div class="mt-2">
+                                {% for subfield in form.service_type %}
+                                <div class="form-check mb-2">
+                                    {{ subfield(class="form-check-input") }}
+                                    {{ subfield.label(class="form-check-label") }}
+                                </div>
+                                {% endfor %}
+                                
+                                {% if form.service_type.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.service_type.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3" id="other-service-field" style="display: none;">
+                            {{ form.other_service.label(class="form-label") }}
+                            {{ form.other_service(class="form-control", placeholder="具体的なご希望内容をご記入ください") }}
+                        </div>
+                        
+                        <!-- 受診同行の詳細フィールド（服薬情報） -->
+                        <div id="medical-details-fields" style="display: none;">
+                            <div class="card mb-4">
+                                <div class="card-header bg-light">
+                                    <h4 class="card-title h6 mb-0">服薬情報</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        {{ form.has_medication.label(class="form-label") }}
+                                        <div class="mt-2">
+                                            {% for subfield in form.has_medication %}
+                                            <div class="form-check form-check-inline">
+                                                {{ subfield(class="form-check-input") }}
+                                                {{ subfield.label(class="form-check-label") }}
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3" id="medication-details-field" style="display: none;">
+                                        {{ form.medication_details.label(class="form-label") }}
+                                        {{ form.medication_details(class="form-control", rows=3, placeholder="服用中のお薬の名前をご記入ください（複数ある場合は改行してください）") }}
+                                        <div class="form-text">お薬手帳がある場合は、当日ご持参ください</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 生活支援の詳細フィールド -->
+                        <div id="daily-assistance-fields" style="display: none;">
+                            <div class="card mb-4">
+                                <div class="card-header bg-light">
+                                    <h4 class="card-title h6 mb-0">生活支援の詳細</h4>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted mb-3">介助が必要な項目について、介助のレベルをお選びください。</p>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            {{ form.toilet_assistance.label(class="form-label") }}
+                                            {{ form.toilet_assistance(class="form-select" + (" is-invalid" if form.toilet_assistance.errors else "")) }}
+                                            
+                                            {% if form.toilet_assistance.errors %}
+                                                <div class="invalid-feedback">
+                                                    {% for error in form.toilet_assistance.errors %}
+                                                        {{ error }}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <div class="col-md-4 mb-3">
+                                            {{ form.meal_assistance.label(class="form-label") }}
+                                            {{ form.meal_assistance(class="form-select" + (" is-invalid" if form.meal_assistance.errors else "")) }}
+                                            
+                                            {% if form.meal_assistance.errors %}
+                                                <div class="invalid-feedback">
+                                                    {% for error in form.meal_assistance.errors %}
+                                                        {{ error }}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <div class="col-md-4 mb-3">
+                                            {{ form.walking_assistance.label(class="form-label") }}
+                                            {{ form.walking_assistance(class="form-select" + (" is-invalid" if form.walking_assistance.errors else "")) }}
+                                            
+                                            {% if form.walking_assistance.errors %}
+                                                <div class="invalid-feedback">
+                                                    {% for error in form.walking_assistance.errors %}
+                                                        {{ error }}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 希望日時 -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.preferred_date.label(class="form-label required-label") }}
+                                {{ form.preferred_date(class="form-control flatpickr-date" + (" is-invalid" if form.preferred_date.errors else ""), type="date") }}
+                                
+                                {% if form.preferred_date.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.preferred_date.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">カレンダーから日付を選択してください</div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                {{ form.preferred_time.label(class="form-label required-label") }}
+                                {{ form.preferred_time(class="form-select" + (" is-invalid" if form.preferred_time.errors else "")) }}
+                                
+                                {% if form.preferred_time.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.preferred_time.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">希望時間を選択してください</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 健康情報セクション -->
+                    <div class="form-section">
+                        <h3 class="section-title"><i class="fas fa-notes-medical me-2"></i>健康情報</h3>
+                        
+                        <div class="mb-3">
+                            {{ form.medical_history.label(class="form-label") }}
+                            {{ form.medical_history(class="form-control", rows=4, placeholder="現在治療中の病気や過去に治療した病気などをご記入ください") }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.special_notes.label(class="form-label") }}
+                            {{ form.special_notes(class="form-control", rows=4, placeholder="アレルギーや移動に関する配慮など、特に注意が必要な事項をご記入ください") }}
+                        </div>
+                    </div>
+                    
+                    <!-- 同意セクション -->
+                    <div class="form-section">
+                        <h3 class="section-title"><i class="fas fa-check-square me-2"></i>個人情報の取り扱いについて</h3>
+                        
+                        <div class="card mb-3 bg-light">
+                            <div class="card-body">
+                                <h4 class="h6">個人情報の取り扱いについて</h4>
+                                <p>当サービスでは、ご入力いただいた個人情報を以下の目的で利用いたします。</p>
+                                <ul>
+                                    <li>適切な介護サービスの提供のため</li>
+                                    <li>介護サービスに関する連絡、相談対応のため</li>
+                                    <li>介護サービスの質の向上、業務の改善のため</li>
+                                </ul>
+                                <p>個人情報は、法令に基づく場合や緊急時を除き、ご本人の同意なく第三者へ提供することはありません。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="mt-2">
+                                {% for subfield in form.agreement %}
+                                <div class="form-check mb-2">
+                                    {{ subfield(class="form-check-input" + (" is-invalid" if form.agreement.errors else "")) }}
+                                    {{ subfield.label(class="form-check-label") }}
+                                </div>
+                                {% endfor %}
+                                
+                                {% if form.agreement.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.agreement.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        {{ form.submit(class="btn btn-primary btn-lg px-5") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    flatpickr(".flatpickr-date", {
+      locale: "ja",
+      dateFormat: "Y-m-d",
+      minDate: "today",  // 過去日を選択不可にする
+      disableMobile: true, // モバイル用ネイティブ日付ピッカーを無効
+      altInput: true,
+      altFormat: "Y年m月d日（D）",  // 表示を日本語に
+      allowInput: true
+    });
+  </script>
+
+<script>
+    // 年/月/日の選択肢を生成
+    const yearSelect = document.getElementById("yearSelect");
+    const monthSelect = document.getElementById("monthSelect");
+    const daySelect = document.getElementById("daySelect");
+    const hiddenInput = document.getElementById("birthdate");
+  
+    const currentYear = new Date().getFullYear();
+    for (let y = currentYear; y >= 1900; y--) {
+      yearSelect.add(new Option(`${y}年`, y));
+    }
+  
+    for (let m = 1; m <= 12; m++) {
+      monthSelect.add(new Option(`${m}月`, String(m).padStart(2, "0")));
+    }
+  
+    function updateDays() {
+      daySelect.innerHTML = '';
+      const year = yearSelect.value;
+      const month = monthSelect.value;
+      const daysInMonth = new Date(year, month, 0).getDate();
+      for (let d = 1; d <= daysInMonth; d++) {
+        daySelect.add(new Option(`${d}日`, String(d).padStart(2, "0")));
+      }
+    }
+  
+    function updateHiddenInput() {
+      const y = yearSelect.value;
+      const m = monthSelect.value;
+      const d = daySelect.value;
+      if (y && m && d) {
+        hiddenInput.value = `${y}-${m}-${d}`;
+      }
+    }
+  
+    yearSelect.addEventListener("change", () => {
+      updateDays();
+      updateHiddenInput();
+    });
+  
+    monthSelect.addEventListener("change", () => {
+      updateDays();
+      updateHiddenInput();
+    });
+  
+    daySelect.addEventListener("change", updateHiddenInput);
+  
+    // 初期化
+    updateDays();
+  </script>
+  
+
+<style>
+    #birthdate{
+        display: none;
+    }
+
+    #yearSelect {
+        font-size: 0.8rem;
+    }
+</style>
+
+{% endblock %}
