@@ -1,0 +1,81 @@
+🏁 実行に必要なこと
+✅ 1. 必須ファイルがそろってるか確認！
+プロジェクトフォルダにこれらがあるか見てみて：
+
+bash
+コピーする
+編集する
+your_project/
+├── app.py              ← Flaskアプリの本体
+├── main.py             ← 実行するファイル（Flask起動）
+├── models.py           ← DB定義（SQLAlchemy）
+├── forms.py            ← フォーム定義（Flask-WTF）
+├── routes.py           ← ルーティング（POST/GET）
+├── create_db.py        ← 初回だけ実行してDB作成
+├── templates/
+│   ├── base.html
+│   ├── form.html
+│   ├── confirm.html
+│   └── complete.html
+├── static/
+│   ├── css/style.css
+│   └── js/script.js
+├── .env                ← DB URIとSECRET_KEYを書く（または環境変数で設定）
+✅ 2. 仮想環境 & パッケージインストール
+もしまだなら以下で仮想環境＆インストール（すでにやってたらスキップOK）
+
+bash
+コピーする
+編集する
+python -m venv venv
+venv\Scripts\activate         # ← Windows（macなら source venv/bin/activate）
+pip install flask flask-wtf flask-sqlalchemy python-dotenv
+✅ 3. .env の内容確認
+.env ファイルがあるか、内容はこんな感じになってる？
+
+ini
+コピーする
+編集する
+DATABASE_URL=sqlite:///care_service.db
+FLASK_SECRET_KEY=your_super_secret_key
+app.py の中で load_dotenv() で読み込むようにしてるかも要チェック。
+
+✅ 4. 初回だけ：DB作成コマンド
+bash
+コピーする
+編集する
+python create_db.py
+care_service.db が生成されたらOK！
+
+✅ 5. Flaskアプリ起動！
+以下のいずれかでアプリを起動します：
+
+bash
+コピーする
+編集する
+python main.py
+もしくは FLASK_APP=main.py が設定されていれば：
+
+bash
+コピーする
+編集する
+flask run
+起動したらこう表示される：
+
+csharp
+コピーする
+編集する
+ * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+✅ 6. ブラウザでアクセス！
+👉 http://127.0.0.1:5000 にアクセスして
+
+入力フォームが表示される
+
+入力して「確認画面へ」進める
+
+内容確認して「送信」
+
+完了ページが表示される
+
+ここまで動けば完璧！
+

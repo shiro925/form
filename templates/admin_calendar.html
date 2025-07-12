@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+
+{% block title %}管理者ページ - カレンダー表示{% endblock %}
+
+{% block content %}
+<!-- FullCalendarのCSS読み込み -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .fc-event-title {
+    font-size: 0.95em;
+    color: #495057;
+    font-weight: 500;
+  }
+  .fc-event-time {
+    font-size: 0.95em;
+    font-weight: 600;
+    color: #3a5f6f;
+  }
+  .fc .fc-event {
+    background-color: #e9f4f8 !important;
+    border: 1px solid #d0e3eb !important;
+    border-radius: 0.6rem;
+    padding: 2px 6px;
+  }
+  .fc .fc-daygrid-event-dot {
+    border-color: #6da7b2 !important;
+  }
+  #calendar {
+    max-width: 100%;
+    margin: 0 auto;
+    min-height: 800px;
+    height: auto;
+    padding: 0 10px;
+    margin-bottom: 2rem;
+  }
+  .fc .fc-daygrid-day-number {
+    color: #556b78;
+    font-weight: 500;
+    text-decoration: none;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+  .fc-toolbar-title, .fc-button {
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+  .fc-toolbar-title {
+    font-size: 1.4rem;
+  }
+  .fc-button {
+    background-color: #cde7f0;
+    border-color: #a9d3e0;
+    color: #3a5f6f;
+    font-weight: 500;
+    border-radius: 0.5rem;
+  }
+  .fc-button:hover {
+    background-color: #b5dbe8;
+    color: #2e4a54;
+  }
+  @media (max-width: 768px) {
+    html, body { font-size: 14px; }
+    .fc-toolbar-title { font-size: 1.1rem !important; }
+    .fc-button { font-size: 0.85rem; }
+    #calendar { min-height: 60vh; }
+    .fc-header-toolbar .fc-dayGridMonth-button { display: none !important; }
+  }
+  @media print {
+    body * { visibility: hidden; }
+    #modalContent, #modalContent * { visibility: visible; }
+    #modalContent { position: absolute; top: 0; left: 0; width: 100%; }
+  }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h4">申込カレンダー</h1>
+  <button onclick="window.print()" class="btn btn-outline-secondary">
+    <i class="fas fa-print me-2"></i>印刷
+  </button>
+</div>
+
+<div id="calendar"></div>
+
+<!-- モーダル（申込詳細） -->
+<div class="modal fade" id="requestModal" tabindex="-1" aria-labelledby="requestModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" id="modalContent">
+      <div class="modal-header">
+        <h5 class="modal-title" id="requestModalLabel">申込詳細</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered">
+          <tbody>
+            <!-- 各情報をここに表示 -->
+            <tr><th>氏名</th><td id="modalName"></td></tr>
+            <tr><th>希望日</th><td id="modalDate"></td></tr>
+            <tr><th>希望時間</th><td id="modalTime"></td></tr>
+            <tr><th>サービス</th><td id="modalService"></td></tr>
+            <tr><th>電話番号</th><td id="modalPhone"></td></tr>
+            <tr><th>紹介者</th><td id="modalReferrer"></td></tr>
+            <tr><th>紹介者連絡先</th><td id="modalReferrerContact"></td></tr>
+            <tr><th>要介護度</th><td id="modalCareLevel"></td></tr>
+            <tr><th>要支援度</th><td id="modalSupportLevel"></td></tr>
+            <tr><th>その他希望</th><td id="modalOtherService"></td></tr>
+            <tr><th>既往歴</th><td id="modalMedicalHistory"></td></tr>
+            <tr><th>配慮事項</th><td id="modalSpecialNotes"></td></tr>
+            <tr><th>トイレ介助</th><td id="modalToilet"></td></tr>
+            <tr><th>食事介助</th><td id="modalMeal"></td></tr>
+            <tr><th>歩行介助</th><td id="modalWalking"></td></tr>
+            <tr><th>服薬の有無</th><td id="modalHasMedication"></td></tr>
+            <tr><th>服薬詳細</th><td id="modalMedicationDetails"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <form method="POST" id="deleteForm" onsubmit="return confirm('この申込を削除しますか？')">
+          <button type="submit" class="btn btn-danger rounded-pill">
+            <i class="fas fa-trash-alt me-1"></i> 削除する
+          </button>
+        </form>
+        <button type="button" class="btn btn-outline-primary rounded-pill" onclick="printModalContent()">
+          <i class="fas fa-print me-1"></i> この内容を印刷
+        </button>
+        <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">閉じる</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FullCalendarと日本語ロケールのJS読み込み -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales-all.min.js"></script>
+
+<script>
+  const careRequests = [
+    {% for req in requests %}
+    {
+      id: {{ req.id }},
+      title: "{{ req.name }}",
+      start: "{{ req.preferred_date.isoformat() }}",
+      extendedProps: {
+        time: "{{ req.preferred_time }}",
+        phone: "{{ req.phone }}",
+        service: "{{ req.service_type }}",
+        referrer_name: "{{ req.referrer_name }}",
+        referrer_contact: "{{ req.referrer_contact }}",
+        care_level: "{{ req.care_level }}",
+        support_level: "{{ req.support_level }}",
+        other_service: "{{ req.other_service }}",
+        medical_history: `{{ req.medical_history | e }}`,
+        special_notes: `{{ req.special_notes | e }}`,
+        toilet_assistance: "{{ req.toilet_assistance or '記載なし' }}",
+        meal_assistance: "{{ req.meal_assistance or '記載なし' }}",
+        walking_assistance: "{{ req.walking_assistance or '記載なし' }}",
+        has_medication: "{{ req.has_medication or '記載なし' }}",
+        medication_details: "{{ req.medication_details or '記載なし' }}"
+      }
+    },
+    {% endfor %}
+  ];
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const isMobile = window.innerWidth <= 768;
+    const calendarEl = document.getElementById('calendar');
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: isMobile ? 'listWeek' : 'dayGridMonth',
+      locale: 'ja',
+      height: 'auto',
+      expandRows: true,
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: isMobile ? 'listWeek' : 'dayGridMonth,listWeek'
+      },
+      events: careRequests,
+      eventContent: function(arg) {
+        const name = arg.event.title;
+        const time = arg.event.extendedProps.time || '';
+        return { html: `<div class="fc-event-title">${name}</div><div class="fc-event-time">${time}</div>` };
+      },
+      eventClick: function (info) {
+        const props = info.event.extendedProps;
+        document.getElementById('modalName').textContent = info.event.title;
+        document.getElementById('modalDate').textContent = info.event.startStr;
+        document.getElementById('modalTime').textContent = props.time || "未指定";
+        document.getElementById('modalService').textContent = props.service;
+        document.getElementById('modalPhone').textContent = props.phone;
+        document.getElementById('modalReferrer').textContent = props.referrer_name;
+        document.getElementById('modalReferrerContact').textContent = props.referrer_contact;
+        document.getElementById('modalCareLevel').textContent = props.care_level;
+        document.getElementById('modalSupportLevel').textContent = props.support_level;
+        document.getElementById('modalOtherService').textContent = props.other_service;
+        document.getElementById('modalMedicalHistory').textContent = props.medical_history;
+        document.getElementById('modalSpecialNotes').textContent = props.special_notes;
+        document.getElementById('modalToilet').textContent = props.toilet_assistance;
+        document.getElementById('modalMeal').textContent = props.meal_assistance;
+        document.getElementById('modalWalking').textContent = props.walking_assistance;
+        document.getElementById('modalHasMedication').textContent = props.has_medication;
+        document.getElementById('modalMedicationDetails').textContent = props.medication_details;
+        document.getElementById('deleteForm').action = `/admin/delete/${info.event.id}`;
+        const modal = new bootstrap.Modal(document.getElementById('requestModal'));
+        modal.show();
+      },
+    });
+    calendar.render();
+  });
+
+  function printModalContent() {
+    const content = document.getElementById("modalContent").innerHTML;
+    const printWindow = window.open('', '', 'height=800,width=600');
+    printWindow.document.write('<html><head><title>申込内容 印刷</title>');
+    printWindow.document.write('<style>@media print { body { font-size: 12px; padding: 20px; } table { width: 100%; border-collapse: collapse; } th, td { border: 1px solid #ccc; padding: 6px; } }</style>');
+    printWindow.document.write('</head><body>');
+    printWindow.document.write(content);
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+  }
+</script>
+{% endblock %}

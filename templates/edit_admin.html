@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}管理者情報の編集{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">管理者情報の編集</h2>
+
+    <form method="POST">
+        <div class="mb-3">
+            <label for="username" class="form-label">新しいユーザー名</label>
+            <input type="text" class="form-control" name="username" id="username" value="{{ current_user }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">新しいパスワード</label>
+            <input type="password" class="form-control" name="password" id="password" required>
+        </div>
+        <button type="submit" class="btn btn-success">更新する</button>
+        <a href="{{ url_for('admin_calendar') }}" class="btn btn-secondary ms-2">戻る</a>
+    </form>
+</div>
+{% endblock %}

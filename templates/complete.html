@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}送信完了 | 介護サービス利用情報フォーム{% endblock %}
+
+{% block header_title %}送信完了{% endblock %}
+{% block header_subtitle %}情報のご提供ありがとうございました{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body completion-message">
+                <div class="completion-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                
+                <h2 class="completion-title">情報が送信されました</h2>
+                
+                <p class="lead mb-4">
+                    介護サービス利用に関する情報をいただき、ありがとうございました。<br>
+                    スタッフが内容を確認し、近日中にご連絡いたします。
+                </p>
+                
+                <div class="alert alert-info">
+                    <h3 class="h5"><i class="fas fa-info-circle me-2"></i>今後の流れ</h3>
+                    <ol class="mb-0 text-start">
+                        <li>ご入力いただいた情報をもとに、適切なサービスを検討いたします</li>
+                        <li>担当スタッフからご連絡いたします（通常3営業日以内）</li>
+                        <li>ご要望に応じて、詳細なサービス内容のご説明や訪問日程の調整を行います</li>
+                    </ol>
+                </div>
+                
+                <div class="alert alert-success mt-3">
+                    <i class="fas fa-envelope me-2"></i>入力いただいた情報は <strong>testtest09250529@gmail.com</strong> 宛にメールで送信されました
+                </div>
+                
+                <div class="mt-4">
+                    <div class="d-flex gap-3 justify-content-center">
+                        <a href="{{ url_for('index') }}" class="btn btn-primary">
+                            トップに戻る
+                        </a>
+                        
+                    </div>
+                </div>
+                
+                <div class="mt-5 border-top pt-4">
+                    <h3 class="h5 mb-3">お問い合わせ先</h3>
+                    <p>
+                        <i class="fas fa-phone me-2"></i>電話番号: 03-XXXX-XXXX（平日 9:00〜18:00）<br>
+                        <i class="fas fa-envelope me-2"></i>メール: testtest09250529@gmail.com
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

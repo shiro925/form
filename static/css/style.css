@@ -1,0 +1,297 @@
+/* 全体のスタイル */
+:root {
+    --primary-color: #a0d468;        /* 黄緑色（ベース） */
+    --secondary-color: #8cc152;      /* 濃い黄緑色 */
+    --accent-color: #ffaa45;         /* オレンジ（アクセント） */
+    --text-color: #4a4a4a;           /* ダークグレー */
+    --light-color: #f8f9fa;          /* ライトグレー */
+    --highlight-color: #ffe3b5;      /* ライトオレンジ（ハイライト） */
+    --error-color: #ff826b;          /* コーラル（エラー） */
+    --border-radius: 12px;           /* 角丸の半径 */
+    --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+body {
+    font-family: 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', sans-serif;
+    color: var(--text-color);
+    background-color: #fafafa;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 800px;
+}
+
+/* ヘッダースタイル */
+.header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.header h1 {
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+/* カードスタイル */
+.card {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 2rem;
+    background-color: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+/* フォームスタイル */
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.form-control, .form-select {
+    border-radius: var(--border-radius);
+    border: 1px solid #e0e0e0;
+    padding: 0.75rem 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(184, 216, 227, 0.25);
+}
+
+.form-text {
+    color: #7d7d7d;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* 必須マーク */
+.required-label::after {
+    content: "*";
+    color: #ff6b6b;
+    margin-left: 0.25rem;
+}
+
+/* ラジオボタンとチェックボックスのカスタマイズ */
+.form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(184, 216, 227, 0.25);
+    border-color: var(--primary-color);
+}
+
+/* ボタンスタイル */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+    border-radius: var(--border-radius);
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: #8cc152;
+    border-color: #8cc152;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-secondary {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: #fff;
+    border-radius: var(--border-radius);
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover, .btn-secondary:focus {
+    background-color: #ff9933;
+    border-color: #ff9933;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* エラーメッセージ */
+.invalid-feedback {
+    color: #e74c3c;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.form-control.is-invalid, .form-select.is-invalid {
+    border-color: var(--error-color);
+}
+
+.alert {
+    border-radius: var(--border-radius);
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    border: none;
+}
+
+.alert-danger {
+    background-color: var(--error-color);
+    color: #fff;
+}
+
+/* 確認画面のスタイル */
+.confirmation-item {
+    margin-bottom: 1.5rem;
+}
+
+.confirmation-label {
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 0.25rem;
+}
+
+.confirmation-value {
+    padding: 0.75rem 1rem;
+    background-color: var(--light-color);
+    border-radius: var(--border-radius);
+}
+
+/* 完了ページのスタイル */
+.completion-message {
+    text-align: center;
+    padding: 3rem 0;
+}
+
+.completion-icon {
+    font-size: 4rem;
+    color: var(--accent-color);
+    margin-bottom: 1.5rem;
+}
+
+.completion-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+/* フッタースタイル */
+.footer {
+    margin-top: 3rem;
+    padding: 2rem 0;
+    background-color: var(--light-color);
+    text-align: center;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+/* レスポンシブ調整 */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1.5rem;
+    }
+    
+    .header {
+        padding: 1.5rem 0;
+    }
+    
+    .header h1 {
+        font-size: 1.75rem;
+    }
+    
+    .btn-primary, .btn-secondary {
+        padding: 0.6rem 1.2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .header {
+        padding: 1rem 0;
+    }
+    
+    .header h1 {
+        font-size: 1.5rem;
+    }
+}
+
+/* アクセシビリティ向上のための追加スタイル */
+:focus {
+    outline: 3px solid var(--highlight-color);
+    outline-offset: 2px;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.form-section:last-child {
+    border-bottom: none;
+}
+
+.section-title {
+    color: var(--accent-color);
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+/* ヘルプテキストのスタイル */
+.help-text {
+    background-color: var(--highlight-color);
+    border-radius: var(--border-radius);
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid var(--primary-color);
+}
+
+.help-text p {
+    margin-bottom: 0;
+}
+
+@media print {
+    body * {
+      visibility: hidden;
+    }
+    #calendar, #calendar * {
+      visibility: visible;
+    }
+    #calendar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
+  }
+  
